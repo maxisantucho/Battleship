@@ -78,12 +78,9 @@ public class Barco {
             coordenadasBarco = cargarBarco(longitud);
 
             System.out.println("Length: " + longitud);
-            for (int i = empieza; i >= termina; i--) {
-                System.out.print(inicio.charAt(0) + "" + i + " ");
-            }
         }
         inicioBarco = inicio + "";
-        finBarco = inicio + "";
+        finBarco = inicio.substring(0, 1) + "" + termina;
     }
 
     public String[] cargarBarco(int longitud) {
@@ -123,8 +120,8 @@ public class Barco {
                 System.out.print(columnas[i] + inicio.substring(1) + " ");
             }
         }
-        inicioBarco = inicio + empieza; // inicio + "" + empieza;
-        finBarco = inicio + termina; // inicio + "" + termina;
+        inicioBarco = empieza + "" + inicio.substring(1);
+        finBarco = termina + "" + inicio.substring(1);
     }
 
     public boolean sonCoordValidas(String inicio, String fin) {

@@ -1,7 +1,5 @@
 package clases;
 
-import java.util.Scanner;
-
 public class Tablero {
 
     private char[][] campo = new char[10][10];
@@ -46,18 +44,47 @@ public class Tablero {
             Barco barco1 = new Barco(nombreBarco);
             barco1.crearBarco(columnas, nombreBarco);
             String[] coordenadasBarco = barco1.getCoordenadasBarco();
-            int longitudIngresada = coordenadasBarco.length;
-            if (longitudIngresada != MisBarcos.valueOf(nombreBarco).getLongitud()) {
-                System.out.println("\nError. La longitud debe ser de " + MisBarcos.valueOf(nombreBarco).getLongitud() + ". Intente denuevo");
-                bandera = false;
+            if(coordenadasBarco != null) {
+                int longitudIngresada = coordenadasBarco.length;
+                if (longitudIngresada != MisBarcos.valueOf(nombreBarco).getLongitud()) {
+                    System.out.println("\nError. La longitud debe ser de " + MisBarcos.valueOf(nombreBarco).getLongitud() + ". Intente denuevo");
+                    bandera = false;
+                } else if (estaAdyacente(barco1)) {
+                    System.out.println("\nError. las reglas del juego establecen que los barcos no pueden estar adyacentes entre sí. Intente denuevo");
+                    bandera = false;
+                } else {
+                    insertarBarco(coordenadasBarco, barco1);
+                    bandera = true;
+                }
             } else {
-                insertarBarco(coordenadasBarco, barco1);
+                bandera = false;
             }
         } while(!bandera);
     }
 
+    public boolean estaAdyacente(Barco barco) {
+        String inicioBarco = barco.getInicioBarco();
+        String finBarco = barco.getFinBarco();
+        char inicioEmpieza = inicioBarco.charAt(0);
+        int finEmpieza = Integer.parseInt(inicioBarco.substring(1));
+        char inicioTermina = finBarco.charAt(0);
+        int finTermina = Integer.parseInt(finBarco.substring(1));
+        finEmpieza--;
+        finTermina--;
+        boolean bandera = true;
+        int i = 0;
+        int j = 0;
+        while(bandera && i < campo.length) {
+            while(bandera && j < campo[i].length) {
+
+                j++;
+            }
+            i++;
+        }
+        return true;
+    }
+
     public void insertarBarco(String[] coordenadas, Barco barco) {
-        Scanner sc = new Scanner(System.in);
         String inicio = barco.getInicioBarco();
         String fin = barco.getFinBarco();
         int longitud = coordenadas.length;
@@ -69,10 +96,36 @@ public class Tablero {
         int finEmpieza = Integer.parseInt(inicio.substring(1));
         char inicioTermina = fin.charAt(0);
         int finTermina = Integer.parseInt(fin.substring(1));
-        int coorA = 0;
-        int coorB = 0;
         finEmpieza--;
         finTermina--;
+        if(inicioEmpieza == inicioTermina) {
+            insertarPorNum(inicioEmpieza, finEmpieza, finTermina);
+        } else if(finEmpieza == finTermina) {
+            insertarPorLetra(inicioEmpieza, finEmpieza, inicioTermina);
+        }
+    }
+
+    public void insertarPorNum(char inicioEmpieza, int finEmpieza, int finTermina){
+        int coorA = 0;
+        for (int i = 0; i < columnas.length; i++) {
+            if (inicioEmpieza == columnas[i]) {
+                coorA = i;
+            }
+        }
+        if (finEmpieza < finTermina) {
+            for (int i = finEmpieza; i <= finTermina; i++) {
+                campo[coorA][i] = '0';
+            }
+        } else if (finEmpieza > finTermina) {
+            for (int i = finTermina; i <= finEmpieza; i++) {
+                campo[coorA][i] = '0';
+            }
+        }
+    }
+
+    public void insertarPorLetra(char inicioEmpieza, int finEmpieza, char inicioTermina) {
+        int coorA = 0;
+        int coorB = 0;
         for (int i = 0; i < columnas.length; i++) {
             if (inicioEmpieza == columnas[i]) {
                 coorA = i;
@@ -80,13 +133,13 @@ public class Tablero {
                 coorB = i;
             }
         }
-        if (finEmpieza < finTermina) {
-            for (int i = 0; i < longitud; i++) {
-                campo[coorA][finEmpieza] = '0';
+        if (coorA < coorB) {
+            for (int i = coorA; i <= coorB; i++) {
+                campo[i][finEmpieza] = '0';
             }
-        } else if (finEmpieza > finTermina) {
-            for (int i = 0; i < longitud; i++) {
-                campo[coorA][finTermina] = '0';
+        } else if (coorA > coorB) {
+            for (int i = coorB; i <= coorA; i++) {
+                campo[i][coorB] = '0';
             }
         }
     }
