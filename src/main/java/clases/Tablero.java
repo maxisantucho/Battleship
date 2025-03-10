@@ -1,13 +1,17 @@
 package clases;
 
+import java.util.ArrayList;
+
 public class Tablero {
 
     private char[][] campo = new char[10][10];
     private int[] filas = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
     private char[] columnas = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'};
+    private ArrayList<String> barcos;
 
     public Tablero() {
         llenarCampo();
+        barcos = new ArrayList<>();
     }
 
     private void llenarCampo() {
@@ -63,30 +67,24 @@ public class Tablero {
     }
 
     public boolean estaAdyacente(Barco barco) {
-        String inicioBarco = barco.getInicioBarco();
-        String finBarco = barco.getFinBarco();
-        char inicioEmpieza = inicioBarco.charAt(0);
-        int finEmpieza = Integer.parseInt(inicioBarco.substring(1));
-        char inicioTermina = finBarco.charAt(0);
-        int finTermina = Integer.parseInt(finBarco.substring(1));
-        finEmpieza--;
-        finTermina--;
-        boolean bandera = true;
         int i = 0;
-        int j = 0;
-        while(bandera && i < campo.length) {
-            while(bandera && j < campo[i].length) {
-
-                j++;
+        boolean bandera = false;
+        while(!bandera && i < barcos.size()) {
+            String inicio = barcos.get(i).substring(0, 2);
+            String fin = barcos.get(i).substring(2);
+            if(inicio.equalsIgnoreCase(barco.getInicioBarco()) || fin.equalsIgnoreCase(barco.getFinBarco())) {
+                bandera = true;
             }
             i++;
         }
-        return true;
+        return bandera;
     }
 
     public void insertarBarco(String[] coordenadas, Barco barco) {
         String inicio = barco.getInicioBarco();
         String fin = barco.getFinBarco();
+        String barcoString = inicio + "" + fin;
+        barcos.add(barcoString);
         int longitud = coordenadas.length;
         insertarBarcoEnCampo(inicio, fin, longitud);
     }
